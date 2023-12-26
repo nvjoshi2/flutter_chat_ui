@@ -46,27 +46,29 @@ class Input extends StatefulWidget {
 
 /// [Input] widget state.
 class _InputState extends State<Input> {
-  late final _inputFocusNode = FocusNode(
-    onKeyEvent: (node, event) {
-      if (event.physicalKey == PhysicalKeyboardKey.enter &&
-          !HardwareKeyboard.instance.physicalKeysPressed.any(
-            (el) => <PhysicalKeyboardKey>{
-              PhysicalKeyboardKey.shiftLeft,
-              PhysicalKeyboardKey.shiftRight,
-            }.contains(el),
-          )) {
-        if (kIsWeb && _textController.value.isComposingRangeValid) {
-          return KeyEventResult.ignored;
-        }
-        if (event is KeyDownEvent) {
-          _handleSendPressed();
-        }
-        return KeyEventResult.handled;
-      } else {
+  KeyEventResult onKeyEvent(_, KeyEvent event) {
+    if (event.physicalKey == PhysicalKeyboardKey.enter &&
+        !HardwareKeyboard.instance.physicalKeysPressed.any(
+          (el) => <PhysicalKeyboardKey>{
+            PhysicalKeyboardKey.shiftLeft,
+            PhysicalKeyboardKey.shiftRight,
+          }.contains(el),
+        )) {
+      if (kIsWeb && _textController.value.isComposingRangeValid) {
         return KeyEventResult.ignored;
       }
-    },
-  );
+      if (event is KeyDownEvent) {
+        _handleSendPressed();
+      }
+      return KeyEventResult.handled;
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+
+  late final _inputFocusNode = (widget.options.focusNode
+        ?..onKeyEvent = onKeyEvent) ??
+      FocusNode(onKeyEvent: onKeyEvent);
 
   bool _sendButtonVisible = false;
   late TextEditingController _textController;
@@ -267,7 +269,10 @@ class InputOptions {
     this.autofocus = false,
     this.enableSuggestions = true,
     this.enabled = true,
+    this.focusNode,
   });
+
+  final FocusNode? focusNode;
 
   /// Controls the [Input] clear behavior. Defaults to [InputClearMode.always].
   final InputClearMode inputClearMode;
