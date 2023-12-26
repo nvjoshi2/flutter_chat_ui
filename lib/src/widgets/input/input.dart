@@ -244,7 +244,9 @@ class _InputState extends State<Input> {
 
   @override
   void dispose() {
-    _inputFocusNode.dispose();
+    if (widget.options.shouldDisposeFocusNodeOnWidgetDispose) {
+      _inputFocusNode.dispose();
+    }
     _textController.dispose();
     super.dispose();
   }
@@ -270,7 +272,10 @@ class InputOptions {
     this.enableSuggestions = true,
     this.enabled = true,
     this.focusNode,
+    this.shouldDisposeFocusNodeOnWidgetDispose = true,
   });
+
+  final bool shouldDisposeFocusNodeOnWidgetDispose;
 
   final FocusNode? focusNode;
 
