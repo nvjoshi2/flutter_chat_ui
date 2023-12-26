@@ -270,10 +270,7 @@ class InputOptions {
     this.enableSuggestions = true,
     this.enabled = true,
     this.focusNode,
-    this.shouldDisposeFocusNodeOnWidgetDispose = true,
   });
-
-  final bool shouldDisposeFocusNodeOnWidgetDispose;
 
   final FocusNode? focusNode;
 
